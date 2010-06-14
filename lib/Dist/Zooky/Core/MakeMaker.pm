@@ -3,7 +3,6 @@ package Dist::Zooky::Core::MakeMaker;
 use strict;
 use warnings;
 use Software::LicenseUtils;
-use Params::Check               qw[check];
 use Moose;
 use IPC::Cmd qw[run can_run];
 
@@ -58,6 +57,8 @@ sub examine {
   my $version;
   my $license;
   my %p;
+  my %c;
+  my %b;
   {
     open my $MAKEFILE, '<', 'Makefile' or die "Could not open 'Makefile': $!\n";
 
@@ -80,8 +81,8 @@ sub examine {
         next;
       }
 
-      if ( my ($found) = m|^[\#]\s+PREREQ_PM\s+=>\s+(.+)| ) {
-        while( $found =~ m/(?:\s)([\w\:]+)=>(?:q\[(.*?)\],?|undef)/g ) {
+      if ( my ($prereqs) = m|^[\#]\s+PREREQ_PM\s+=>\s+(.+)| ) {
+        while( $prereqs =~ m/(?:\s)([\w\:]+)=>(?:q\[(.*?)\],?|undef)/g ) {
             if( defined $p{$1} ) {
                 my $ver = $self->_version_to_number(version => $2);
                 $p{$1} = $ver
@@ -93,6 +94,35 @@ sub examine {
         }
         next;
       }
+
+      if ( my ($buildreqs) = m|^[\#]\s+BUILD_REQUIRES\s+=>\s+(.+)| ) {
+        while( $buildreqs =~ m/(?:\s)([\w\:]+)=>(?:q\[(.*?)\],?|undef)/g ) {
+            if( defined $b{$1} ) {
+                my $ver = $self->_version_to_number(version => $2);
+                $b{$1} = $ver
+                  if $self->_vcmp( $ver, $b{$1} ) > 0;
+            }
+            else {
+                $b{$1} = $self->_version_to_number(version => $2);                  
+            }
+        }
+        next;
+      }
+
+      if ( my ($confreqs) = m|^[\#]\s+CONFIGURE_REQUIRES\s+=>\s+(.+)| ) {
+        while( $confreqs =~ m/(?:\s)([\w\:]+)=>(?:q\[(.*?)\],?|undef)/g ) {
+            if( defined $c{$1} ) {
+                my $ver = $self->_version_to_number(version => $2);
+                $c{$1} = $ver
+                  if $self->_vcmp( $ver, $c{$1} ) > 0;
+            }
+            else {
+                $c{$1} = $self->_version_to_number(version => $2);                  
+            }
+        }
+        next;
+      }
+
     }
 
     close $MAKEFILE;
@@ -102,7 +132,7 @@ sub examine {
   $self->_set_author( $author );
   $self->_set_license( $license );
   $self->_set_version( $version );
-  $self->_set_prereqs( \%p );
+  $self->_set_prereqs( { prereqs => \%p, build => \%b, configure => \%c } );
   {
     my $cmd = [ $make, 'distclean' ];
     run( command => $cmd, verbose => 0 );
@@ -113,30 +143,6 @@ sub examine {
 sub return_meta {
   my $self = shift;
   return { map { ( $_, $self->$_ ) } qw(author name version license Prereq) };
-}
-
-sub _version_to_number {
-    my $self = shift;
-    my %hash = @_;
-
-    my $version;
-    my $tmpl = {
-        version => { default => '0.0', store => \$version },
-    };
-
-    check( $tmpl, \%hash ) or return;
-
-    return $version if $version =~ /^\.?\d/;
-    return '0.0';
-}
-
-sub _vcmp {
-    my $self = shift;
-    my ($x, $y) = @_;
-    
-    s/_//g foreach $x, $y;
-
-    return $x <=> $y;
 }
 
 __PACKAGE__->meta->make_immutable;

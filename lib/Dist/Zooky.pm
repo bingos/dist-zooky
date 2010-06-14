@@ -70,8 +70,14 @@ sub examine {
     print $distini +( $type eq 'ModBuild' ? '[ModuleBuild]' : '[MakeMaker]' ), "\n";
     print $distini "[$_]\n" for qw(Manifest TestRelease ConfirmRelease UploadToCPAN);
     print $distini "\n";
+    print $distini "[Prereq / ConfigureRequires]\n";
+    print $distini join(' = ', $_, $meta->{Prereq}->{configure}->{$_}), "\n" for sort keys %{ $meta->{Prereq}->{configure} };
+    print $distini "\n";
+    print $distini "[Prereq / BuildRequires]\n";
+    print $distini join(' = ', $_, $meta->{Prereq}->{build}->{$_}), "\n" for sort keys %{ $meta->{Prereq}->{build} };
+    print $distini "\n";
     print $distini "[Prereq]\n";
-    print $distini join(' = ', $_, $meta->{Prereq}->{$_}), "\n" for sort keys %{ $meta->{Prereq} };
+    print $distini join(' = ', $_, $meta->{Prereq}->{prereqs}->{$_}), "\n" for sort keys %{ $meta->{Prereq}->{prereqs} };
     close $distini;
   }
 }
