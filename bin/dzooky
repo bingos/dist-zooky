@@ -1,0 +1,6 @@
+#!perl
+use strict;
+use warnings;
+use Dist::Zooky::App;
+# ABSTRACT: do stuff with your dist
+Dist::Zooky::App->run;
