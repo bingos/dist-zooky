@@ -7,6 +7,7 @@ use Moose;
 use IPC::Cmd qw[run can_run];
 
 with 'Dist::Zooky::Role::Core';
+with 'Dist::Zooky::Role::Meta';
 
 has 'name' => (
   is => 'ro',

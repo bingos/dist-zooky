@@ -1,6 +1,28 @@
 #!perl
+package dzooky;
 use strict;
 use warnings;
 use Dist::Zooky::App;
 # ABSTRACT: do stuff with your dist
 Dist::Zooky::App->run;
+
+__END__
+
+=head1 NAME
+
+dzooky - convert a dist to Dist::Zilla
+
+=head1 SYNOPSIS
+
+  $ cd Some-Dist-Dir
+  $ dzooky
+
+=head1 DESCRIPTION
+
+dzooky is a L<Dist::Zilla>'s nephew. He has the ability to summon his uncle.
+
+dzooky will try its best to convert a distribution to use L<Dist::Zilla>. It
+suuports L<ExtUtils::MakeMaker>, L<Module::Install> and L<Module::Build> based
+distributions, with certain limitations.
+
+=cut

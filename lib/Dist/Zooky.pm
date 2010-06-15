@@ -30,7 +30,8 @@ sub examine {
       local $/;
       my $mfpl = <$MAKEFILEPL>;
       if ( $mfpl =~ /inc::Makefile::Install/s ) {
-        $type = 'ModInstall';
+        #$type = 'ModInstall';
+        $type = 'MakeMaker';
       }
       else {
          $type = 'MakeMaker';
@@ -88,3 +89,13 @@ no Moose;
 qq[And Dist::Zooky too!]
 
 __END__
+
+=head1 NAME
+
+Dist::Zooky - converts a distribution to Dist::Zilla
+
+=head1 SYNOPSIS
+
+=head1 DESCRIPTION
+
+
