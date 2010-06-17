@@ -2,55 +2,56 @@ package Dist::Zooky::Core::MakeMaker;
 
 use strict;
 use warnings;
-use Software::LicenseUtils;
 use Moose;
 use IPC::Cmd qw[run can_run];
 
 with 'Dist::Zooky::Role::Core';
 with 'Dist::Zooky::Role::Meta';
 
-has 'name' => (
+has 'make' => (
   is => 'ro',
   isa => 'Str',
-  init_arg => undef,
-  writer => '_set_name',
-);
-
-has 'version' => (
-  is => 'ro',
-  isa => 'Str',
-  init_arg => undef,
-  writer => '_set_version',
-);
-
-has 'author' => (
-  is => 'ro',
-  isa => 'Str',
-  init_arg => undef,
-  writer => '_set_author',
-);
-
-has 'license' => (
-  is => 'ro',
-  isa => 'Str',
-  init_arg => undef,
-  writer => '_set_license',
-);
-
-has 'Prereq' => (
-  is => 'ro',
-  isa => 'HashRef',
-  init_arg => undef,
-  writer => '_set_prereqs',
+  default => sub { can_run('make') },
 );
 
 sub examine {
   my $self = shift;
-  my $make = can_run('make');
+
   {
+    local $ENV{PERL_MM_USE_DEFAULT} = 1;
+    local $ENV{PERL_EXTUTILS_AUTOINSTALL} = '--defaultdeps';
+
     my $cmd = [ $^X, 'Makefile.PL' ];
     run ( command => $cmd, verbose => 0 );
   }
+
+  if ( -e 'MYMETA.yml' ) {
+
+    my $struct = $self->meta_from_file( 'MYMETA.yml' );
+    $self->_set_name( $struct->{name} );
+    $self->_set_author( $struct->{author} );
+    $self->_set_license( $struct->{license} );
+    $self->_set_version( $struct->{version} );
+    $self->_set_prereqs( $struct->{prereqs} );
+    
+  }
+  else {
+
+    $self->_parse_makefile;
+
+  }
+
+  {
+    my $cmd = [ $self->make, 'distclean' ];
+    run( command => $cmd, verbose => 0 );
+  }
+
+  return;
+}
+
+sub _parse_makefile {
+  my $self = shift;
+
   die "No 'Makefile' found\n" unless -e 'Makefile';
 
   my $distname;
@@ -128,16 +129,15 @@ sub examine {
 
     close $MAKEFILE;
   }
-  ($license) = map { ( split /::/ )[-1] } Software::LicenseUtils->guess_license_from_meta("license: $license");
   $self->_set_name( $distname );
   $self->_set_author( $author );
   $self->_set_license( $license );
   $self->_set_version( $version );
-  $self->_set_prereqs( { prereqs => \%p, build => \%b, configure => \%c } );
-  {
-    my $cmd = [ $make, 'distclean' ];
-    run( command => $cmd, verbose => 0 );
-  }
+  my $prereqs = { };
+  $prereqs->{runtime}   = { requires => \%p } if scalar keys %p;
+  $prereqs->{configure} = { requires => \%c } if scalar keys %c;
+  $prereqs->{build}     = { requires => \%c } if scalar keys %c;
+  $self->_set_prereqs( $prereqs );
   return;
 }
 
@@ -149,6 +149,5 @@ sub return_meta {
 __PACKAGE__->meta->make_immutable;
 no Moose;
 
-qq[MakeMaker]
+qq[MakeMaker];
 
-__END__

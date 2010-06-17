@@ -14,6 +14,5 @@ sub execute {
   return;
 }
 
-qq[Lighten up and play]
+qq[Lighten up and play];
 
-__END__

@@ -7,6 +7,8 @@ use warnings;
 use Class::MOP;
 use Moose;
 use MooseX::Types::Perl qw(DistName LaxVersionStr);
+use Dist::Zooky::License;
+use Dist::Zooky::DistIni;
 use Module::Pluggable search_path => 'Dist::Zooky::Core';
 
 has name => (
@@ -55,40 +57,27 @@ sub examine {
 
   my $meta = $core->return_meta();
 
-  {
-    open my $distini, '>', 'dist.ini' or die "Could not open 'dist.ini': $!\n";
-    print $distini join(' = ', $_, $meta->{$_}), "\n" for grep { defined $meta->{$_} } qw(name author version license);
-    ( my $holder = $meta->{author} ) =~ s/\s*\<.+?\>\s*//g;
-    print $distini "copyright_holder = $holder\n";
-    print $distini "\n";
-    print $distini "[$_]\n" for 
-      qw(GatherDir PruneCruft ManifestSkip MetaYAML MetaJSON License);
-    print $distini "[Readme]\n" unless -e 'README';
-    print $distini "[ExecDir]\n";
-    print $distini "dir = scripts\n" if -e 'scripts';
-    print $distini "[$_]\n" for
-      qw(ExtraTests ShareDir);
-    print $distini +( $type eq 'ModBuild' ? '[ModuleBuild]' : '[MakeMaker]' ), "\n";
-    print $distini "[$_]\n" for qw(Manifest TestRelease ConfirmRelease UploadToCPAN);
-    print $distini "\n";
-    print $distini "[Prereq / ConfigureRequires]\n";
-    print $distini join(' = ', $_, $meta->{Prereq}->{configure}->{$_}), "\n" for sort keys %{ $meta->{Prereq}->{configure} };
-    print $distini "\n";
-    print $distini "[Prereq / BuildRequires]\n";
-    print $distini join(' = ', $_, $meta->{Prereq}->{build}->{$_}), "\n" for sort keys %{ $meta->{Prereq}->{build} };
-    print $distini "\n";
-    print $distini "[Prereq]\n";
-    print $distini join(' = ', $_, $meta->{Prereq}->{prereqs}->{$_}), "\n" for sort keys %{ $meta->{Prereq}->{prereqs} };
-    close $distini;
+  if ( defined $meta->{license} ) {
+    my @licenses;
+    foreach my $license ( @{ $meta->{license} } ) {
+      my $aref = Dist::Zooky::License->new( metaname => $license )->license;
+      push @licenses, map { ( split /::/, ref $_ )[-1] } @$aref;
+    }
+    $meta->{license} = \@licenses;
   }
+
+  $meta->{type} = $type;
+
+  my $ini = Dist::Zooky::DistIni->new( metadata => $meta );
+  $ini->write;
 }
 
 __PACKAGE__->meta->make_immutable;
 no Moose;
 
-qq[And Dist::Zooky too!]
+qq[And Dist::Zooky too!];
 
-__END__
+=pod
 
 =head1 NAME
 
@@ -96,6 +85,12 @@ Dist::Zooky - converts a distribution to Dist::Zilla
 
 =head1 SYNOPSIS
 
+  use Dist::Zooky;
+
+  my $dzooky = Dist::Zooky->new();
+
+  $dzooky->examine;
+
 =head1 DESCRIPTION
 
-
+=cut

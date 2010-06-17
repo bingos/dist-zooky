@@ -6,7 +6,7 @@ use Dist::Zooky::App;
 # ABSTRACT: do stuff with your dist
 Dist::Zooky::App->run;
 
-__END__
+=pod
 
 =head1 NAME
 

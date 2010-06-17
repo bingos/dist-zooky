@@ -8,6 +8,4 @@ use App::Cmd::Setup 0.307 -app;
 
 sub default_command { 'dist' }
 
-qq[Meep]
-
-__END__
+qq[Meep];
