@@ -25,4 +25,37 @@ use_ok('Dist::Zooky::DistIni');
   $distini->write( $file );
 
   ok( -e $file, 'The file exists' );
+
+  {
+    open my $fh, '<', $file or die "Could not open '$file': $!\n";
+    my $content = do { local $/; <$fh> };
+    
+    like( $content, qr/\Q$_\E/s, "Content contains '$_'" ) for 
+    ( 'name = Foo-Bar',
+      'version = 0.02',
+      'author = Duck Dodgers',
+      'author = Ivor Module',
+      'license = Perl_5',
+      'holder = Duck Dodgers',
+      '[GatherDir]',
+      '[PruneCruft]',
+      '[ManifestSkip]',
+      '[MetaYAML]',
+      '[MetaJSON]',
+      '[License]',
+      ';[Readme]',
+      '[ExecDir]',
+      '[ExtraTests]',
+      '[ShareDir]',
+      '[MakeMaker]',
+      '[Manifest]',
+      '[TestRelease]',
+      '[ConfirmRelease]',
+      '[UploadToCPAN]',
+      ';[Prereq / ConfigureRequires]',
+      ';[Prereq / BuildRequires]',
+      ';[Prereq]',);
+
+    close $fh;
+  }
 }

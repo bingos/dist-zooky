@@ -3,14 +3,10 @@ package dzooky;
 use strict;
 use warnings;
 use Dist::Zooky::App;
-# ABSTRACT: do stuff with your dist
+# ABSTRACT: convert a dist to Dist::Zilla
 Dist::Zooky::App->run;
 
 =pod
-
-=head1 NAME
-
-dzooky - convert a dist to Dist::Zilla
 
 =head1 SYNOPSIS
 
@@ -19,10 +15,30 @@ dzooky - convert a dist to Dist::Zilla
 
 =head1 DESCRIPTION
 
-dzooky is a L<Dist::Zilla>'s nephew. He has the ability to summon his uncle.
+dzooky is L<Dist::Zilla>'s nephew. He has the ability to summon his uncle.
 
 dzooky will try its best to convert a distribution to use L<Dist::Zilla>. It
 suuports L<ExtUtils::MakeMaker>, L<Module::Install> and L<Module::Build> based
 distributions, with certain limitations.
+
+Simply execute C<dzooky> in the directory containing the distribution you wish
+to convert to L<Dist::Zilla>. C<dzooky> will determine the type of distribution
+it is and execute the C<Makefile.PL> or C<Build.PL> and gather meta information
+to generate a C<dist.ini> file for you.
+
+It will C<die> on any error conditions it encounters.
+
+=head1 CAVEAT PROGRAMMER
+
+This should be considered as experimental for the moment. It does work in the main
+but there are some C<gotchas>.
+
+The L<ExtUtils::MakeMaker> examination is done by parsing the C<Makefile> that is
+produced by executing C<Makefile.PL>. L<Module::Install> will also fall back to
+this mechanism if a C<MYMETA.yml> file is not generated.
+
+The L<Module::Build> examination is purely from C<MYMETA.yml>.
+
+This has some limitations.
 
 =cut

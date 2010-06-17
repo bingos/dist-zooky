@@ -10,11 +10,17 @@ use MooseX::Types::Perl qw(DistName LaxVersionStr);
 use Dist::Zooky::License;
 use Dist::Zooky::DistIni;
 use Module::Pluggable search_path => 'Dist::Zooky::Core';
+use ExtUtils::MakeMaker ();
 
 has name => (
   is   => 'ro',
   isa  => DistName,
   writer => 'set_name',
+);
+
+has 'make' => (
+  is => 'ro',
+  isa => 'Str',
 );
 
 sub examine {
@@ -47,7 +53,7 @@ sub examine {
   foreach my $plugin ( $self->plugins ) {
     if ( $plugin =~ /$type$/ ) {
       Class::MOP::load_class( $plugin );
-      $core = $plugin->new();
+      $core = $plugin->new( ( $type eq 'MakeMaker' and $self->make ? ( make => $self->make ) : () ) );
     }
   }
 
@@ -70,6 +76,18 @@ sub examine {
 
   my $ini = Dist::Zooky::DistIni->new( metadata => $meta );
   $ini->write;
+
+  warn "Wrote 'dist.ini'\n";
+
+  my @files = grep { -e $_ } qw(MANIFEST Makefile.PL Build.PL);
+  my $prompt = "\nThere are a number of files that should be removed now\n\n" .
+               "Do you want me to remove [" . join(' ', @files ) . "] ? (yes/no)";
+  my $answer = ExtUtils::MakeMaker::prompt($prompt, 'no');
+  if ($answer =~ /\A(?:y|ye|yes)\z/i) {
+    warn "Removing files\n";
+    unlink $_ for @files;
+  }
+  warn "Done.\n";
 }
 
 __PACKAGE__->meta->make_immutable;

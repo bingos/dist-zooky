@@ -13,7 +13,7 @@ name = {{ $name }}
 version = {{ $version }}
 {{ $OUT .= join "\n", map { "author = $_" } @authors; }}
 {{ $OUT .= join "\n", map { "license = $_" } @licenses; }}
-{{ ( my $holder = $authors[0] ) =~ s/\s*\<.+?\>\s*//g; "holder = $holder"; }}
+{{ ( my $holder = $authors[0] ) =~ s/\s*\<.+?\>\s*//g; "copyright_holder = $holder"; }}
 
 [GatherDir]
 [PruneCruft]
@@ -42,17 +42,26 @@ version = {{ $version }}
       $OUT .= "[Prereq / ConfigureRequires]\n";
       $OUT .= join(' = ', $_, $configure{$_}) . "\n" for sort keys %configure;
    }
+   else {
+      $OUT .= ';[Prereq / ConfigureRequires]';
+   }
 }}
 {{ 
    if ( keys %build ) { 
       $OUT .= "[Prereq / BuildRequires]\n";
       $OUT .= join(' = ', $_, $build{$_}) . "\n" for sort keys %build;
    }
+   else {
+      $OUT .= ';[Prereq / BuildRequires]';
+   }
 }}
 {{ 
    if ( keys %runtime ) { 
       $OUT .= "[Prereq]\n";
       $OUT .= join(' = ', $_, $runtime{$_}) . "\n" for sort keys %runtime;
+   }
+   else {
+      $OUT .= ';[Prereq]';
    }
 }}
 |;
@@ -69,7 +78,7 @@ sub write {
   my %stash;
   $stash{$_} = $self->metadata->{Prereq}->{$_}->{requires}
     for qw(configure build runtime);
-  $stash{$_} = $self->metadata->{$_} for qw(author license version name);
+  $stash{$_} = $self->metadata->{$_} for qw(author license version name type);
   $stash{"${_}s"} = delete $stash{$_} for qw(author license);
   my $content = $self->fill_in_string(
     $template,

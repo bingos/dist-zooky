@@ -18,6 +18,7 @@ sub examine {
   my $self = shift;
 
   {
+    local $ENV{X_MYMETA} = 1; # Make Module::Install produce MYMETA.yml
     local $ENV{PERL_MM_USE_DEFAULT} = 1;
     local $ENV{PERL_EXTUTILS_AUTOINSTALL} = '--defaultdeps';
 
