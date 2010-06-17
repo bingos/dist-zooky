@@ -1,5 +1,7 @@
 package Dist::Zooky::Core::ModBuild;
 
+# ABSTRACT: gather meta data for Module::Build dists
+
 use strict;
 use warnings;
 use Moose;
@@ -52,3 +54,16 @@ no Moose;
 
 qq[MakeMaker];
 
+=pod
+
+=head1 METHODS
+
+=over
+
+=item C<examine>
+
+=item C<return_meta>
+
+=back 
+
+=cut

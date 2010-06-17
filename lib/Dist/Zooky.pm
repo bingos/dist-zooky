@@ -97,10 +97,6 @@ qq[And Dist::Zooky too!];
 
 =pod
 
-=head1 NAME
-
-Dist::Zooky - converts a distribution to Dist::Zilla
-
 =head1 SYNOPSIS
 
   use Dist::Zooky;
@@ -110,5 +106,24 @@ Dist::Zooky - converts a distribution to Dist::Zilla
   $dzooky->examine;
 
 =head1 DESCRIPTION
+
+Dist::Zooky is L<Dist::Zilla>'s nephew. He has the ability to summon his uncle.
+
+It will try its best to convert a distribution to use L<Dist::Zilla>. It
+supports L<ExtUtils::MakeMaker>, L<Module::Install> and L<Module::Build> based
+distributions, with certain limitations.
+
+The main documentation for this is under L<dzooky>.
+
+=head2 METHODS
+
+=over
+
+=item C<examine>
+
+This does all the heavy-lifting of determining if a distribution is L<ExtUtils::MakeMaker>, 
+L<Module::Install> and L<Module::Build> based, gathers meta data and generates a C<dist.ini>.
+
+=back
 
 =cut

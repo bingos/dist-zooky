@@ -18,7 +18,7 @@ Dist::Zooky::App->run;
 dzooky is L<Dist::Zilla>'s nephew. He has the ability to summon his uncle.
 
 dzooky will try its best to convert a distribution to use L<Dist::Zilla>. It
-suuports L<ExtUtils::MakeMaker>, L<Module::Install> and L<Module::Build> based
+supports L<ExtUtils::MakeMaker>, L<Module::Install> and L<Module::Build> based
 distributions, with certain limitations.
 
 Simply execute C<dzooky> in the directory containing the distribution you wish

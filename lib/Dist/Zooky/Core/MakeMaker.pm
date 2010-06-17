@@ -1,5 +1,7 @@
 package Dist::Zooky::Core::MakeMaker;
 
+# ABSTRACT: gather meta data for EUMM or M::I dists
+
 use strict;
 use warnings;
 use Moose;
@@ -152,3 +154,16 @@ no Moose;
 
 qq[MakeMaker];
 
+=pod
+
+=head1 METHODS
+
+=over
+
+=item C<examine>
+
+=item C<return_meta>
+
+=back
+
+=cut
