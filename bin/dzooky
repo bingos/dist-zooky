@@ -41,4 +41,12 @@ The L<Module::Build> examination is purely from C<MYMETA.yml>.
 
 This has some limitations.
 
+=head1 TODO
+
+As we pull a lot of data from C<MYMETA.yml> ( where applicable ), we could fill in
+a lot more of the C<dist.ini> automatically. 
+
+The L<Module::Install> code does not take into account dists using L<Module::AutoInstall>,
+maybe it should. Any ideas for achieving this would be welcome.
+
 =cut
