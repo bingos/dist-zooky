@@ -92,6 +92,7 @@ Dist::Zooky::DistIni - Generates a Dist::Zilla dist.ini file
 =head1 SYNOPSIS
 
   my $meta = {
+    type => 'MakeMaker',
     name => 'Foo-Bar',
     version => '0.02',
     author => [ 'Duck Dodgers', 'Ivor Biggun' ],

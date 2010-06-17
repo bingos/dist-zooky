@@ -10,6 +10,7 @@ use_ok('Dist::Zooky::DistIni');
   my $dir = tempdir( CLEANUP => 1, DIR => '.' );
   
   my $meta = {
+    type => 'MakeMaker',
     name => 'Foo-Bar',
     version => '0.02',
     author => [ 'Duck Dodgers', 'Ivor Module', ],
