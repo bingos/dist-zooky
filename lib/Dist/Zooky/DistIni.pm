@@ -8,6 +8,12 @@ use Moose;
 
 with 'Dist::Zilla::Role::TextTemplate';
 
+has 'type' => (
+  is => 'ro',
+  isa => 'Str',
+  required => 1,
+);
+
 my $template = q|
 name = {{ $name }}
 version = {{ $version }}
@@ -76,9 +82,10 @@ sub write {
   my $self = shift;
   my $file = shift || 'dist.ini';
   my %stash;
-  $stash{$_} = $self->metadata->{Prereq}->{$_}->{requires}
+  $stash{type} = $self->type;
+  $stash{$_} = $self->metadata->{prereqs}->{$_}->{requires}
     for qw(configure build runtime);
-  $stash{$_} = $self->metadata->{$_} for qw(author license version name type);
+  $stash{$_} = $self->metadata->{$_} for qw(author license version name);
   $stash{"${_}s"} = delete $stash{$_} for qw(author license);
   my $content = $self->fill_in_string(
     $template,

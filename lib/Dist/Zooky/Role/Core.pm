@@ -7,49 +7,14 @@ use warnings;
 use Params::Check qw[check];
 use Moose::Role;
 
-use MooseX::Types::Moose qw[Str ArrayRef];
-use Moose::Util::TypeConstraints;
-subtype( 'ArrayRefStr', as ArrayRef[Str] );
-coerce( 'ArrayRefStr', from 'Str', via { [ $_ ] } );
+requires '_build_metadata';
 
-requires 'examine';
-requires 'return_meta';
-
-has 'name' => (
+has 'metadata' => (
   is => 'ro',
-  isa => 'Str',
+  isa => 'Hashref',
   init_arg => undef,
-  writer => '_set_name',
-);
-
-has 'version' => (
-  is => 'ro',
-  isa => 'Str',
-  init_arg => undef,
-  writer => '_set_version',
-);
-
-has 'author' => (
-  is => 'ro',
-  isa => 'ArrayRefStr',
-  init_arg => undef,
-  writer => '_set_author',
-  coerce => 1,
-);
-
-has 'license' => (
-  is => 'ro',
-  isa => 'ArrayRefStr',
-  init_arg => undef,
-  writer => '_set_license',
-  coerce => 1,
-);
-
-has 'Prereq' => (
-  is => 'ro',
-  isa => 'HashRef',
-  init_arg => undef,
-  writer => '_set_prereqs',
+  lazy => 1,
+  builder => '_build_metadata',
 );
 
 sub _version_to_number {

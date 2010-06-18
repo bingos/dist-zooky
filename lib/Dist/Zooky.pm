@@ -12,12 +12,6 @@ use Dist::Zooky::DistIni;
 use Module::Pluggable search_path => 'Dist::Zooky::Core';
 use ExtUtils::MakeMaker ();
 
-has name => (
-  is   => 'ro',
-  isa  => DistName,
-  writer => 'set_name',
-);
-
 has 'make' => (
   is => 'ro',
   isa => 'Str',
@@ -59,9 +53,7 @@ sub examine {
 
   die "No core plugin found for '$type'\n" unless $core;
 
-  $core->examine;
-
-  my $meta = $core->return_meta();
+  my $meta = $core->metadata();
 
   if ( defined $meta->{license} ) {
     my @licenses;
@@ -72,9 +64,7 @@ sub examine {
     $meta->{license} = \@licenses;
   }
 
-  $meta->{type} = $type;
-
-  my $ini = Dist::Zooky::DistIni->new( metadata => $meta );
+  my $ini = Dist::Zooky::DistIni->new( type => $type, metadata => $meta );
   $ini->write;
 
   warn "Wrote 'dist.ini'\n";
