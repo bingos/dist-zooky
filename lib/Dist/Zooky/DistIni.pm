@@ -5,6 +5,7 @@ package Dist::Zooky::DistIni;
 use strict;
 use warnings;
 use Moose;
+use Module::Load::Conditional qw[check_install];
 
 with 'Dist::Zilla::Role::TextTemplate';
 
@@ -42,6 +43,8 @@ version = {{ $version }}
 [TestRelease]
 [ConfirmRelease]
 [UploadToCPAN]
+
+{{ $noindex }}
 
 {{ 
    if ( keys %configure ) { 
@@ -82,6 +85,14 @@ sub write {
   my $self = shift;
   my $file = shift || 'dist.ini';
   my %stash;
+  if ( my $noindex = $self->metadata->{no_index} ) {
+    my $pre = check_install( module => 'Dist::Zilla::Plugin::MetaNoIndex' )
+                    ? '' : ';';
+    $stash{noindex} = $pre . "[MetaNoIndex]\n";
+    foreach my $type ( keys %{ $noindex } ) {
+      $stash{noindex} .= join "\n", map { "$pre$type = " . $_ } @{ $noindex->{$type} };
+    }
+  }
   $stash{type} = $self->type;
   $stash{$_} = $self->metadata->{prereqs}->{$_}->{requires}
     for qw(configure build runtime);

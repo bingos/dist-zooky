@@ -38,7 +38,7 @@ sub _build_metadata {
     run( command => $cmd, verbose => 0 );
   }
 
-  return $struct;
+  return { %$struct };
 }
 
 __PACKAGE__->meta->make_immutable;

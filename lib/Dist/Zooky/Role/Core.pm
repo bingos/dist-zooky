@@ -11,7 +11,7 @@ requires '_build_metadata';
 
 has 'metadata' => (
   is => 'ro',
-  isa => 'Hashref',
+  isa => 'HashRef',
   init_arg => undef,
   lazy => 1,
   builder => '_build_metadata',

@@ -47,7 +47,8 @@ sub examine {
   foreach my $plugin ( $self->plugins ) {
     if ( $plugin =~ /$type$/ ) {
       Class::MOP::load_class( $plugin );
-      $core = $plugin->new( ( $type eq 'MakeMaker' and $self->make ? ( make => $self->make ) : () ) );
+      #$core = $plugin->new( ( $type eq 'MakeMaker' and $self->make ? ( make => $self->make ) : () ) );
+      $core = $plugin->new( make => $self->make );
     }
   }
 

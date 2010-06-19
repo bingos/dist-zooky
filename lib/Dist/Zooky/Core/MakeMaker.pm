@@ -46,7 +46,7 @@ sub _build_metadata {
     run( command => $cmd, verbose => 0 );
   }
 
-  return;
+  return { %$struct };
 }
 
 sub _parse_makefile {
