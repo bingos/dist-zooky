@@ -4,14 +4,23 @@ package Dist::Zooky::DistIni;
 
 use strict;
 use warnings;
+use Class::MOP;
 use Moose;
 use Module::Load::Conditional qw[check_install];
+use Module::Pluggable search_path => 'Dist::Zooky::DistIni', except => 'Dist::Zooky::DistIni::Prereqs';
+use Dist::Zooky::DistIni::Prereqs;
 
 with 'Dist::Zilla::Role::TextTemplate';
 
 has 'type' => (
   is => 'ro',
   isa => 'Str',
+  required => 1,
+);
+
+has 'metadata' => (
+  is => 'ro',
+  isa => 'HashRef',
   required => 1,
 );
 
@@ -43,56 +52,12 @@ version = {{ $version }}
 [TestRelease]
 [ConfirmRelease]
 [UploadToCPAN]
-
-{{ $noindex }}
-
-{{ 
-   if ( keys %configure ) { 
-      $OUT .= "[Prereq / ConfigureRequires]\n";
-      $OUT .= join(' = ', $_, $configure{$_}) . "\n" for sort keys %configure;
-   }
-   else {
-      $OUT .= ';[Prereq / ConfigureRequires]';
-   }
-}}
-{{ 
-   if ( keys %build ) { 
-      $OUT .= "[Prereq / BuildRequires]\n";
-      $OUT .= join(' = ', $_, $build{$_}) . "\n" for sort keys %build;
-   }
-   else {
-      $OUT .= ';[Prereq / BuildRequires]';
-   }
-}}
-{{ 
-   if ( keys %runtime ) { 
-      $OUT .= "[Prereq]\n";
-      $OUT .= join(' = ', $_, $runtime{$_}) . "\n" for sort keys %runtime;
-   }
-   else {
-      $OUT .= ';[Prereq]';
-   }
-}}
 |;
-
-has 'metadata' => (
-  is => 'ro',
-  isa => 'HashRef',
-  required => 1,
-);
 
 sub write {
   my $self = shift;
   my $file = shift || 'dist.ini';
   my %stash;
-  if ( my $noindex = $self->metadata->{no_index} ) {
-    my $pre = check_install( module => 'Dist::Zilla::Plugin::MetaNoIndex' )
-                    ? '' : ';';
-    $stash{noindex} = $pre . "[MetaNoIndex]\n";
-    foreach my $type ( keys %{ $noindex } ) {
-      $stash{noindex} .= join "\n", map { "$pre$type = " . $_ } @{ $noindex->{$type} };
-    }
-  }
   $stash{type} = $self->type;
   $stash{$_} = $self->metadata->{prereqs}->{$_}->{requires}
     for qw(configure build runtime);
@@ -102,6 +67,17 @@ sub write {
     $template,
     \%stash,
   );
+
+  foreach my $plugin ( $self->plugins ) {
+     Class::MOP::load_class( $plugin );
+     my $add = $plugin->new( type => $self->type, metadata => $self->metadata )->content;
+     next unless $add;
+     $content = join "\n", $content, $add;
+  }
+
+  my $prereqs = Dist::Zooky::DistIni::Prereqs->new( type => $self->type, metadata => $self->metadata )->content;
+  $content = join("\n", $content, $prereqs) if $prereqs;
+
   open my $ini, '>', $file or die "Could not open '$file': $!\n";
   print $ini $content;
   close $ini;
