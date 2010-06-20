@@ -100,7 +100,7 @@ Dist::Zooky::DistIni - Generates a Dist::Zilla dist.ini file
     version => '0.02',
     author => [ 'Duck Dodgers', 'Ivor Biggun' ],
     license => [ 'Perl_5' ],
-    Prereq => {
+    prereqs => {
       'runtime' => {
         'requires' => { 'Moo::Cow' => '0.19' },
       },
@@ -116,13 +116,19 @@ Dist::Zooky::DistIni takes meta data and writes a L<Dist::Zilla> C<dist.ini> fil
 
 =head2 ATTRIBUTES
 
+These attributes are passed to DistIni plugins.
+
 =over
+
+=item C<type>
+
+A required attribute, the type of distribution, C<MakeMaker> for L<ExtUtils::MakeMaker> or
+L<Module::Install> ( yeah, I know ) based distributions, or C<ModBuild> for L<Module::Build>
+based distributions.
 
 =item C<metadata>
 
-A required attribute. This is a C<HASHREF> of meta data it should contain the keys 
-C<name>, C<version>, C<author>, C<license> and C<Prereq>. See the C<SYNOPSIS> for an
-example.
+A required attribute. This is a C<HASHREF> of meta data.
 
 =back
 
