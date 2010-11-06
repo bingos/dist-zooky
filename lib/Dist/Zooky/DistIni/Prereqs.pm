@@ -11,29 +11,29 @@ with 'Dist::Zooky::Role::DistIni';
 my $template = q|
 {{ 
    if ( keys %configure ) { 
-      $OUT .= "[Prereq / ConfigureRequires]\n";
+      $OUT .= "[Prereqs / ConfigureRequires]\n";
       $OUT .= join(' = ', $_, $configure{$_}) . "\n" for sort keys %configure;
    }
    else {
-      $OUT .= ';[Prereq / ConfigureRequires]';
+      $OUT .= ';[Prereqs / ConfigureRequires]';
    }
 }}
 {{ 
    if ( keys %build ) { 
-      $OUT .= "[Prereq / BuildRequires]\n";
+      $OUT .= "[Prereqs / BuildRequires]\n";
       $OUT .= join(' = ', $_, $build{$_}) . "\n" for sort keys %build;
    }
    else {
-      $OUT .= ';[Prereq / BuildRequires]';
+      $OUT .= ';[Prereqs / BuildRequires]';
    }
 }}
 {{ 
    if ( keys %runtime ) { 
-      $OUT .= "[Prereq]\n";
+      $OUT .= "[Prereqs]\n";
       $OUT .= join(' = ', $_, $runtime{$_}) . "\n" for sort keys %runtime;
    }
    else {
-      $OUT .= ';[Prereq]';
+      $OUT .= ';[Prereqs]';
    }
 }}
 |;
