@@ -51,9 +51,9 @@ use_ok('Dist::Zooky::DistIni');
       '[TestRelease]',
       '[ConfirmRelease]',
       '[UploadToCPAN]',
-      ';[Prereq / ConfigureRequires]',
-      ';[Prereq / BuildRequires]',
-      ';[Prereq]',);
+      ';[Prereqs / ConfigureRequires]',
+      ';[Prereqs / BuildRequires]',
+      ';[Prereqs]',);
 
     close $fh;
   }
