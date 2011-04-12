@@ -4,7 +4,7 @@ use Test::More 'no_plan';
 
 use_ok('Dist::Zooky::License');
 
-{ 
+{
   my $license = Dist::Zooky::License->new( metaname => 'perl' );
   isa_ok( $license, 'Dist::Zooky::License' );
   is( ref $license->license, 'ARRAY', 'License is an arrayref' );
@@ -13,7 +13,7 @@ use_ok('Dist::Zooky::License');
   isa_ok( $license->license->[0], 'Software::License::Perl_5' );
 }
 
-{ 
+{
   my $license = Dist::Zooky::License->new( metaname => 'perl_5' );
   isa_ok( $license, 'Dist::Zooky::License' );
   is( ref $license->license, 'ARRAY', 'License is an arrayref' );
@@ -22,7 +22,7 @@ use_ok('Dist::Zooky::License');
   isa_ok( $license->license->[0], 'Software::License::Perl_5' );
 }
 
-{ 
+{
   my $license = Dist::Zooky::License->new( metaname => 'apache' );
   isa_ok( $license, 'Dist::Zooky::License' );
   is( ref $license->license, 'ARRAY', 'License is an arrayref' );
