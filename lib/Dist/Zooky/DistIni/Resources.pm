@@ -13,7 +13,7 @@ sub content {
   return unless my $resources = $self->metadata->{resources};
   my $content = "[MetaResources]\n";
   foreach my $type ( keys %{ $resources } ) {
-    next if $type eq 'license'; 
+    next if $type eq 'license';
     my $ref = ref $resources->{$type};
     if ( $ref eq 'HASH' ) {
       foreach my $item ( keys %{ $resources->{$type} } ) {

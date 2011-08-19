@@ -9,8 +9,8 @@ use Moose;
 with 'Dist::Zooky::Role::DistIni';
 
 my $template = q|
-{{ 
-   if ( keys %configure ) { 
+{{
+   if ( keys %configure ) {
       $OUT .= "[Prereqs / ConfigureRequires]\n";
       $OUT .= join(' = ', $_, $configure{$_}) . "\n" for sort keys %configure;
    }
@@ -18,8 +18,8 @@ my $template = q|
       $OUT .= ';[Prereqs / ConfigureRequires]';
    }
 }}
-{{ 
-   if ( keys %build ) { 
+{{
+   if ( keys %build ) {
       $OUT .= "[Prereqs / BuildRequires]\n";
       $OUT .= join(' = ', $_, $build{$_}) . "\n" for sort keys %build;
    }
@@ -27,8 +27,8 @@ my $template = q|
       $OUT .= ';[Prereqs / BuildRequires]';
    }
 }}
-{{ 
-   if ( keys %runtime ) { 
+{{
+   if ( keys %runtime ) {
       $OUT .= "[Prereqs]\n";
       $OUT .= join(' = ', $_, $runtime{$_}) . "\n" for sort keys %runtime;
    }

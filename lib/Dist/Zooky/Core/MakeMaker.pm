@@ -30,7 +30,12 @@ sub _build_metadata {
     run ( command => $cmd, verbose => 0 );
   }
 
-  if ( -e 'MYMETA.yml' ) {
+  if ( -e 'MYMETA.json' ) {
+
+    $struct = $self->meta_from_file( 'MYMETA.json' );
+
+  }
+  elsif ( -e 'MYMETA.yml' ) {
 
     $struct = $self->meta_from_file( 'MYMETA.yml' );
 
@@ -90,7 +95,7 @@ sub _parse_makefile {
                   if $self->_vcmp( $ver, $p{$1} ) > 0;
             }
             else {
-                $p{$1} = $self->_version_to_number(version => $2);                  
+                $p{$1} = $self->_version_to_number(version => $2);
             }
         }
         next;
@@ -104,7 +109,7 @@ sub _parse_makefile {
                   if $self->_vcmp( $ver, $b{$1} ) > 0;
             }
             else {
-                $b{$1} = $self->_version_to_number(version => $2);                  
+                $b{$1} = $self->_version_to_number(version => $2);
             }
         }
         next;
@@ -118,7 +123,7 @@ sub _parse_makefile {
                   if $self->_vcmp( $ver, $c{$1} ) > 0;
             }
             else {
-                $c{$1} = $self->_version_to_number(version => $2);                  
+                $c{$1} = $self->_version_to_number(version => $2);
             }
         }
         next;

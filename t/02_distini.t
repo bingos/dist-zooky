@@ -8,7 +8,7 @@ use_ok('Dist::Zooky::DistIni');
 
 {
   my $dir = tempdir( CLEANUP => 1, DIR => '.' );
-  
+
   my $meta = {
     name => 'Foo-Bar',
     version => '0.02',
@@ -18,7 +18,7 @@ use_ok('Dist::Zooky::DistIni');
 
   my $distini = Dist::Zooky::DistIni->new( type => 'MakeMaker', metadata => $meta );
   isa_ok( $distini, 'Dist::Zooky::DistIni' );
-  
+
   my $file = File::Spec->catfile( $dir, 'dist.ini' );
 
   $distini->write( $file );
@@ -28,8 +28,8 @@ use_ok('Dist::Zooky::DistIni');
   {
     open my $fh, '<', $file or die "Could not open '$file': $!\n";
     my $content = do { local $/; <$fh> };
-    
-    like( $content, qr/\Q$_\E/s, "Content contains '$_'" ) for 
+
+    like( $content, qr/\Q$_\E/s, "Content contains '$_'" ) for
     ( 'name = Foo-Bar',
       'version = 0.02',
       'author = Duck Dodgers',

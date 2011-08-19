@@ -112,7 +112,7 @@ The main documentation for this is under L<dzooky>.
 
 =item C<examine>
 
-This does all the heavy-lifting of determining if a distribution is L<ExtUtils::MakeMaker>, 
+This does all the heavy-lifting of determining if a distribution is L<ExtUtils::MakeMaker>,
 L<Module::Install> and L<Module::Build> based, gathers meta data and generates a C<dist.ini>.
 
 =back

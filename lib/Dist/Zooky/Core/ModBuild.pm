@@ -22,14 +22,19 @@ sub _build_metadata {
     run ( command => $cmd, verbose => 0 );
   }
 
-  if ( -e 'MYMETA.yml' ) {
+  if ( -e 'MYMETA.json' ) {
+
+    $struct = $self->meta_from_file( 'MYMETA.json' );
+
+  }
+  elsif ( -e 'MYMETA.yml' ) {
 
     $struct = $self->meta_from_file( 'MYMETA.yml' );
-    
+
   }
   else {
 
-    die "Couldn\'t find a 'MYMETA.yml' file, giving up\n";
+    die "Couldn\'t find a 'MYMETA.yml or MYMETA.json' file, giving up\n";
 
   }
 
