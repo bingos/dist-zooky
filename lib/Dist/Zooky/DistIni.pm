@@ -4,7 +4,7 @@ package Dist::Zooky::DistIni;
 
 use strict;
 use warnings;
-use Class::MOP;
+use Class::Load ();
 use Moose;
 use Module::Load::Conditional qw[check_install];
 use Module::Pluggable search_path => 'Dist::Zooky::DistIni', except => 'Dist::Zooky::DistIni::Prereqs';
@@ -69,7 +69,7 @@ sub write {
   );
 
   foreach my $plugin ( $self->plugins ) {
-     Class::MOP::load_class( $plugin );
+     Class::Load::load_class( $plugin );
      my $add = $plugin->new( type => $self->type, metadata => $self->metadata )->content;
      next unless $add;
      $content = join "\n", $content, $add;

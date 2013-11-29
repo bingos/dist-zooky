@@ -4,7 +4,7 @@ package Dist::Zooky;
 
 use strict;
 use warnings;
-use Class::MOP;
+use Class::Load ();
 use Moose;
 use MooseX::Types::Perl qw(DistName LaxVersionStr);
 use Dist::Zooky::License;
@@ -46,7 +46,7 @@ sub examine {
 
   foreach my $plugin ( $self->plugins ) {
     if ( $plugin =~ /$type$/ ) {
-      Class::MOP::load_class( $plugin );
+      Class::Load::load_class( $plugin );
       #$core = $plugin->new( ( $type eq 'MakeMaker' and $self->make ? ( make => $self->make ) : () ) );
       $core = $plugin->new( ( defined $self->make ? ( make => $self->make ) : () ) );
     }

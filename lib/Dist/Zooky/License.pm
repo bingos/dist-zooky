@@ -5,7 +5,7 @@ package Dist::Zooky::License;
 use strict;
 use warnings;
 use Module::Pluggable search_path => 'Software::License', except => qr/(Custom)$/;
-use Class::MOP;
+use Class::Load ();
 use Moose;
 
 has 'metaname' => (
@@ -26,7 +26,7 @@ sub _build_license {
   my $self = shift;
   my @licenses;
   foreach my $plugin ( $self->plugins ) {
-    Class::MOP::load_class( $plugin );
+    Class::Load::load_class( $plugin );
     my $license = $plugin->new({ holder => 'noddy' }); # need to set holder
     push @licenses, $license
       if $license->meta2_name eq $self->metaname
