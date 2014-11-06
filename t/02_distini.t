@@ -42,7 +42,7 @@ use_ok('Dist::Zooky::DistIni');
       '[MetaYAML]',
       '[MetaJSON]',
       '[License]',
-      ';[Readme]',
+      '[Readme]',
       '[ExecDir]',
       '[ExtraTests]',
       '[ShareDir]',
