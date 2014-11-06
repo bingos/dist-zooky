@@ -27,7 +27,11 @@ sub _build_license {
   my @licenses;
   foreach my $plugin ( $self->plugins ) {
     Class::Load::load_class( $plugin );
-    my $license = $plugin->new({ holder => 'noddy' }); # need to set holder
+    my $license;
+    eval {
+      $license = $plugin->new({ holder => 'noddy' }); # need to set holder
+    };
+    next if $@;
     push @licenses, $license
       if $license->meta2_name eq $self->metaname
       or $license->meta_name  eq $self->metaname;
