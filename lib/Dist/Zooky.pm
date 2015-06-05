@@ -17,13 +17,21 @@ has 'make' => (
   isa => 'Str',
 );
 
+has 'metafile' => (
+  is => 'ro',
+  isa => 'Bool',
+);
+
 sub examine {
   my $self = shift;
 
   die "Hey, you already have a 'dist.ini' giving up\n" if -e 'dist.ini';
 
   my $type;
-  if ( -e 'Build.PL' ) {
+  if ( $self->metafile ) {
+    $type = 'FromMETA';
+  }
+  elsif ( -e 'Build.PL' ) {
     $type = 'ModBuild';
   }
   elsif ( -e 'Makefile.PL' ) {
