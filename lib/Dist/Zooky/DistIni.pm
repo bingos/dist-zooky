@@ -70,7 +70,7 @@ sub write {
     for qw(configure build runtime);
   $stash{$_} = $self->metadata->{$_} for qw(author license version name);
   $stash{"${_}s"} = delete $stash{$_} for qw(author license);
-  my $template = $temphead . ( $self->bundle ? q|[@| . $self->bundle . qq|]| : $tempstd );
+  my $template = $temphead . ( $self->bundle ? q|[@| . $self->bundle . qq|]| : $tempstd ) . "\n";
   my $content = $self->fill_in_string(
     $template,
     \%stash,
