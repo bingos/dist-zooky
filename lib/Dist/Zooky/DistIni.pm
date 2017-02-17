@@ -24,14 +24,22 @@ has 'metadata' => (
   required => 1,
 );
 
-my $template = q|
-name = {{ $name }}
+has 'bundle' => (
+  is => 'ro',
+  isa => 'Str',
+);
+
+my $temphead =
+q|name = {{ $name }}
 version = {{ $version }}
 {{ $OUT .= join "\n", map { "author = $_" } @authors; }}
 {{ $OUT .= join "\n", map { "license = $_" } @licenses; }}
 {{ ( my $holder = $authors[0] ) =~ s/\s*\<.+?\>\s*//g; "copyright_holder = $holder"; }}
 
-[GatherDir]
+|;
+
+my $tempstd =
+q|[GatherDir]
 [PruneCruft]
 [ManifestSkip]
 [MetaYAML]
@@ -51,8 +59,7 @@ version = {{ $version }}
 [Manifest]
 [TestRelease]
 [ConfirmRelease]
-[UploadToCPAN]
-|;
+[UploadToCPAN]|;
 
 sub write {
   my $self = shift;
@@ -63,6 +70,7 @@ sub write {
     for qw(configure build runtime);
   $stash{$_} = $self->metadata->{$_} for qw(author license version name);
   $stash{"${_}s"} = delete $stash{$_} for qw(author license);
+  my $template = $temphead . ( $self->bundle ? q|[@| . $self->bundle . qq|]| : $tempstd );
   my $content = $self->fill_in_string(
     $template,
     \%stash,

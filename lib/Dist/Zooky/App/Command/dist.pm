@@ -11,13 +11,17 @@ sub abstract { 'Dist::Zooky!' }
 sub opt_spec {
   return (
       [ 'make=s', 'Specify make utility to use', ],
+      [ 'bundle=s', 'Specify a plugin bundle to write to the dist.ini file', ],
   );
 }
 
 sub execute {
   my ($self, $opt, $args) = @_;
   require Dist::Zooky;
-  my $zooky = Dist::Zooky->new( ( defined $opt->{make} ? ( make => $opt->{make} ) : () ) );
+  my $zooky = Dist::Zooky->new(
+    ( defined $opt->{make} ? ( make => $opt->{make} ) : () ),
+    ( defined $opt->{bundle} ? ( bundle => $opt->{bundle} ) : () )
+  );
   $zooky->examine;
   return;
 }

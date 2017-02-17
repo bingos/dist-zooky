@@ -22,6 +22,11 @@ has 'metafile' => (
   isa => 'Bool',
 );
 
+has 'bundle' => (
+  is => 'ro',
+  isa => 'Str',
+);
+
 sub examine {
   my $self = shift;
 
