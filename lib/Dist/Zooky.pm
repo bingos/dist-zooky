@@ -78,7 +78,7 @@ sub examine {
     $meta->{license} = \@licenses;
   }
 
-  my $ini = Dist::Zooky::DistIni->new( type => $type, metadata => $meta, bundle => $self->bundle );
+  my $ini = Dist::Zooky::DistIni->new( type => $type, metadata => $meta, ( $self->bundle ? ( bundle => $self->bundle ) : () ) );
   $ini->write;
 
   warn "Wrote 'dist.ini'\n";
