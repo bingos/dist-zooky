@@ -33,6 +33,13 @@ or C<META.yml>, you may use the C<metafile> command to merely examine those file
 
   $ dzooky metafile
 
+dzooky also supports specifying a C<Dist::Zilla> bundle to use instead of the
+defaults.
+
+  $ dzooky dist --bundle BINGOS
+
+This will add [@BINGOS] to the generated C<dist.ini>.
+
 =head1 CAVEAT PROGRAMMER
 
 This should be considered as experimental for the moment. It does work in the main
